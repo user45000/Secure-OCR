@@ -250,7 +250,7 @@
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.83-3.4 9.36-7 10.5V3.18z"/><path d="M11 7h2v6h-2zm0 8h2v2h-2z"/></svg></div>
-    <h1>Secure OCR <span>v2.2.6</span></h1>
+    <h1>Secure OCR <span>v2.2.7</span></h1>
   </div>
   <div class="topbar-actions">
     <span class="security-badge" id="secBadge"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>Anonymisé</span>
@@ -284,9 +284,9 @@
     </select>
   </div>
   <div class="ctrl-sep"></div>
-  <div class="ctrl"><label>Zone</label><div class="toggle" id="togZone"></div></div>
-  <div class="ctrl"><label>Auto-extract</label><div class="toggle" id="togAutoExtract"></div></div>
+  <div class="ctrl-sep"></div>
   <div class="ctrl"><label>Page auto</label><div class="toggle" id="togAutoNext"></div></div>
+  <div class="toggle" id="togAutoExtract" style="display:none"></div>
   <div class="ctrl-sep"></div>
   <div class="ctrl"><label>Séparateurs</label><div class="toggle" id="togSeparators"></div></div>
 </div>
@@ -295,11 +295,11 @@
 <div class="main">
   <div class="left-panel" id="leftPanel">
     <div class="left-toolbar" id="leftToolbar" style="display:none">
-      <span class="hint" id="selectionHint">🎯 Glissez pour sélectionner</span>
+      <span class="hint" id="selectionHint">📄 Image entière</span>
       <div class="btn-group">
         <button class="btn" id="btnReset">✕</button>
-        <button class="btn btn-clear" id="btnClear">⌫ Effacer</button>
-        <button class="btn" id="btnSelectAll">⬜ Tout</button>
+        <button class="btn btn-clear" id="btnClear" style="display:none">⌫ Effacer</button>
+        <button class="btn" id="btnSelectAll" style="display:none">⬜ Tout</button>
         <button class="btn btn-primary" id="btnOCR">▶ Extraire</button>
         <button class="btn btn-primary" id="btnOCRAll" style="display:none">▶ Toutes</button>
       </div>
@@ -381,7 +381,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@
 var $=function(id){return document.getElementById(id)};
 
 // ── PREFS ──
-var DEFAULTS={zone:true,autoExtract:true,autoNext:true,autoCorrect:false,separators:true,lang:'fra'};
+var DEFAULTS={zone:false,autoExtract:true,autoNext:true,autoCorrect:false,separators:true,lang:'fra'};
 function loadPrefs(){try{var p=JSON.parse(localStorage.getItem('ocr_prefs'));var r={};for(var k in DEFAULTS)r[k]=p&&p[k]!==undefined?p[k]:DEFAULTS[k];return r}catch(e){var r={};for(var k in DEFAULTS)r[k]=DEFAULTS[k];return r}}
 function savePrefs(){try{localStorage.setItem('ocr_prefs',JSON.stringify(prefs))}catch(e){}}
 var prefs=loadPrefs();
@@ -389,17 +389,14 @@ var prefs=loadPrefs();
 var canvas=$('imgCanvas'),ctx=canvas.getContext('2d'),selBox=$('selectionBox'),extBox=$('extractedBox');
 
 function applyPrefs(){
-  $('togZone').classList.toggle('active',prefs.zone);
   $('togAutoExtract').classList.toggle('active',prefs.autoExtract);
   $('togAutoNext').classList.toggle('active',prefs.autoNext);
   $('togAutoCorrect').classList.toggle('active',prefs.autoCorrect);
   $('togSeparators').classList.toggle('active',prefs.separators);
   $('langSelect').value=prefs.lang;
-  canvas.style.cursor=prefs.zone?'crosshair':'default';
-  $('selectionHint').textContent=prefs.zone?'🎯 Glissez pour sélectionner':'📄 Image entière';
+  $('selectionHint').textContent='📄 Image entière';
 }
 function makeToggle(el,key,cb){el.addEventListener('click',function(){prefs[key]=!prefs[key];el.classList.toggle('active',prefs[key]);savePrefs();if(cb)cb();});}
-makeToggle($('togZone'),'zone',function(){canvas.style.cursor=prefs.zone?'crosshair':'default';$('selectionHint').textContent=prefs.zone?'🎯 Glissez pour sélectionner':'📄 Image entière';selBox.style.display='none';selBox.classList.remove('done');selection=null;pageSelections={};});
 makeToggle($('togAutoExtract'),'autoExtract');
 makeToggle($('togAutoNext'),'autoNext');
 makeToggle($('togAutoCorrect'),'autoCorrect');
