@@ -21,7 +21,7 @@ L'anonymisation se fait **avant** tout envoi réseau. Le texte transmis à Mistr
 ## 🚀 Utilisation
 
 ### En ligne
-👉 **[Lancer Secure OCR](https://user45000.github.io/secure-ocr/)**
+👉 **[Lancer Secure OCR](https://user45000.github.io/Secure-OCR/)**
 
 ### En local
 1. Téléchargez `index.html`
