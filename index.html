@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure OCR v2.2.4 — Extracteur de texte sécurisé</title>
+<title>Secure OCR — Extracteur de texte sécurisé</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -250,7 +250,7 @@
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.83-3.4 9.36-7 10.5V3.18z"/><path d="M11 7h2v6h-2zm0 8h2v2h-2z"/></svg></div>
-    <h1>Secure OCR</h1>
+    <h1>Secure OCR <span>v2.2.5</span></h1>
   </div>
   <div class="topbar-actions">
     <span class="security-badge" id="secBadge"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>Anonymisé</span>
@@ -994,6 +994,9 @@ $('btnCorrect').addEventListener('click',function(){
     $('keyWarning').classList.add('show');
     $('keyPopover').classList.add('open');
     $('keyInput').focus();
+    // Flash the key button to draw attention
+    var kb=$('btnKey');kb.style.outline='2px solid #f59e0b';kb.style.outlineOffset='2px';
+    setTimeout(function(){kb.style.outline='';kb.style.outlineOffset='';},2000);
     return;
   }
   runCorrection();
@@ -1042,8 +1045,20 @@ function runCorrection(){
       idx++;nextPage();
     }).catch(function(err){
       console.error('Mistral error page '+pi,err);
-      // Skip this page
-      idx++;nextPage();
+      correcting=false;
+      $('btnCorrect').disabled=false;$('btnCorrect').textContent='✨ Corriger';
+      $('progressContainer').classList.remove('active');$('resultText').style.display='';
+      // Show error to user
+      var msg=err&&err.message?err.message:'Erreur inconnue';
+      if(msg.indexOf('401')!==-1)msg='Clé API invalide. Vérifiez votre clé Mistral.';
+      else if(msg.indexOf('429')!==-1)msg='Trop de requêtes. Réessayez dans quelques secondes.';
+      else if(msg.indexOf('Failed to fetch')!==-1)msg='Impossible de contacter Mistral. Vérifiez votre connexion internet.';
+      var errDiv=document.createElement('div');
+      errDiv.style.cssText='padding:12px 16px;margin:8px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;font-size:12px;color:#f87171;';
+      errDiv.textContent='⚠️ '+msg;
+      $('resultText').parentNode.insertBefore(errDiv,$('resultText'));
+      setTimeout(function(){if(errDiv.parentNode)errDiv.parentNode.removeChild(errDiv);},6000);
+      refreshCorrectBtn();
     });
   }
   nextPage();
@@ -1301,7 +1316,7 @@ $('btnSave').addEventListener('click',function(){
   var blob=new Blob(['<!DOCTYPE html>\n'+html],{type:'text/html;charset=utf-8'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');
-  a.href=url;a.download='secure-ocr-v2.2.4.html';
+  a.href=url;a.download='secure-ocr.html';
   document.body.appendChild(a);a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
