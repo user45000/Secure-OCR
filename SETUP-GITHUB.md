@@ -41,22 +41,22 @@ git init
 git add .
 git commit -m "v2.2.3 — Secure OCR initial release"
 git branch -M main
-git remote add origin https://github.com/TON-USERNAME/secure-ocr.git
+git remote add origin https://github.com/user45000/secure-ocr.git
 git push -u origin main
 ```
 
-Remplace `TON-USERNAME` par ton nom d'utilisateur GitHub.
+Remplace `user45000` par ton nom d'utilisateur GitHub.
 
 ## 6. Activer GitHub Pages
 
-1. Va sur ton repo : `https://github.com/TON-USERNAME/secure-ocr`
+1. Va sur ton repo : `https://github.com/user45000/secure-ocr`
 2. **Settings** → **Pages** (dans le menu de gauche)
 3. **Source** : `Deploy from a branch`
 4. **Branch** : `main` / `/ (root)`
 5. Clique **Save**
 6. Attends 1-2 minutes
 
-→ Ton outil est maintenant accessible sur : **`https://TON-USERNAME.github.io/secure-ocr/`**
+→ Ton outil est maintenant accessible sur : **`https://user45000.github.io/secure-ocr/`**
 
 ## 7. Workflow quotidien
 
